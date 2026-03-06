@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { GRADE_COLORS } from '@/utils/score';
 import type { PerformanceGrade } from '@/types';
-import { CheckCircle2 } from 'lucide-react';
+import { CheckCircle2, Trophy, Star, Award, Sparkles, PartyPopper } from 'lucide-react';
 
 interface Props {
   reviewId: string;
@@ -49,41 +49,99 @@ export function AcknowledgeForm({
     }
   }
 
+  const score = finalScore ? parseFloat(finalScore) : 0;
+  const isExcellent = score >= 90;
+  const isGreat = score >= 80 && score < 90;
+  const isGood = score >= 70 && score < 80;
+
   return (
     <div className="space-y-6 max-w-2xl">
-      <div className="flex items-center gap-3">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">{periodName}</h2>
-          {performanceGrade && (
-            <Badge className={`text-sm font-bold mt-1 ${GRADE_COLORS[performanceGrade as PerformanceGrade]}`}>
-              Grade {performanceGrade} · {finalScore ? `${parseFloat(finalScore).toFixed(1)}/100` : ''}
-            </Badge>
+      {/* Celebration header */}
+      <div className="relative overflow-hidden bg-gradient-to-r from-indigo-50 via-purple-50 to-pink-50 border-2 border-indigo-200 rounded-lg p-6 shadow-lg">
+        <div className="absolute top-0 right-0 opacity-10">
+          {isExcellent && <Trophy className="h-32 w-32 text-yellow-500" />}
+          {isGreat && <Star className="h-32 w-32 text-indigo-500" />}
+          {isGood && <Award className="h-32 w-32 text-blue-500" />}
+        </div>
+        <div className="relative">
+          <div className="flex items-center gap-2 mb-2">
+            <PartyPopper className="h-6 w-6 text-indigo-600" />
+            <h2 className="text-xl font-bold text-slate-900">Your Review is Ready!</h2>
+          </div>
+          <p className="text-sm text-slate-600 mb-3">{periodName}</p>
+          {performanceGrade && finalScore && (
+            <div className="flex items-center gap-3 flex-wrap">
+              <Badge className={`text-lg font-bold px-4 py-1.5 shadow-md ${GRADE_COLORS[performanceGrade as PerformanceGrade]}`}>
+                {performanceGrade === 'A' && '🏆 '}
+                {performanceGrade === 'B' && '⭐ '}
+                {performanceGrade === 'C' && '👍 '}
+                Grade {performanceGrade}
+              </Badge>
+              <div className="text-3xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                {parseFloat(finalScore).toFixed(1)}<span className="text-xl text-slate-500">/100</span>
+              </div>
+            </div>
+          )}
+          {isExcellent && (
+            <p className="mt-3 text-sm font-semibold text-green-700 flex items-center gap-1">
+              <Sparkles className="h-4 w-4" />
+              Outstanding performance! Keep up the excellent work! 🌟
+            </p>
+          )}
+          {isGreat && (
+            <p className="mt-3 text-sm font-semibold text-indigo-700 flex items-center gap-1">
+              <Star className="h-4 w-4" />
+              Great job! You're doing really well! 💪
+            </p>
+          )}
+          {isGood && (
+            <p className="mt-3 text-sm font-semibold text-blue-700 flex items-center gap-1">
+              <Award className="h-4 w-4" />
+              Good work! Keep pushing forward! 🚀
+            </p>
           )}
         </div>
       </div>
 
+      {/* Enhanced feedback cards with animations */}
       <div className="space-y-4">
         {supervisorComments && (
-          <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm">Supervisor Comments</CardTitle></CardHeader>
+          <Card className="border-2 hover:border-indigo-300 hover:shadow-md transition-all">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm flex items-center gap-1.5">
+                💬 Supervisor Comments
+              </CardTitle>
+            </CardHeader>
             <CardContent className="text-sm text-slate-700">{supervisorComments}</CardContent>
           </Card>
         )}
         {strengths && (
-          <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm text-green-700">Strengths</CardTitle></CardHeader>
+          <Card className="border-2 border-green-200 bg-green-50/30 hover:border-green-300 hover:shadow-md transition-all">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-green-700 flex items-center gap-1.5">
+                ✨ Your Strengths
+              </CardTitle>
+            </CardHeader>
             <CardContent className="text-sm text-slate-700">{strengths}</CardContent>
           </Card>
         )}
         {improvementAreas && (
-          <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm text-orange-700">Areas for Improvement</CardTitle></CardHeader>
+          <Card className="border-2 border-orange-200 bg-orange-50/30 hover:border-orange-300 hover:shadow-md transition-all">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-orange-700 flex items-center gap-1.5">
+                📈 Growth Areas
+              </CardTitle>
+            </CardHeader>
             <CardContent className="text-sm text-slate-700">{improvementAreas}</CardContent>
           </Card>
         )}
         {actionPlan && (
-          <Card>
-            <CardHeader className="pb-2"><CardTitle className="text-sm text-blue-700">Action Plan</CardTitle></CardHeader>
+          <Card className="border-2 border-blue-200 bg-blue-50/30 hover:border-blue-300 hover:shadow-md transition-all">
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm text-blue-700 flex items-center gap-1.5">
+                🎯 Action Plan
+              </CardTitle>
+            </CardHeader>
             <CardContent className="text-sm text-slate-700">{actionPlan}</CardContent>
           </Card>
         )}
@@ -99,13 +157,26 @@ export function AcknowledgeForm({
         />
       </div>
 
-      <div className="bg-amber-50 border border-amber-200 rounded-lg p-4 text-sm text-amber-800">
-        By acknowledging, you confirm that you have read and understood your performance review for this period.
+      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-2 border-amber-300 rounded-lg p-4 text-sm text-amber-800 shadow-sm">
+        <div className="flex items-start gap-2">
+          <CheckCircle2 className="h-4 w-4 mt-0.5 text-amber-600 shrink-0" />
+          <p>By acknowledging, you confirm that you have read and understood your performance review for this period.</p>
+        </div>
       </div>
 
-      <Button onClick={handleAcknowledge} disabled={submitting} className="bg-indigo-600 hover:bg-indigo-700 gap-2">
-        <CheckCircle2 className="h-4 w-4" />
-        {submitting ? 'Acknowledging...' : 'Acknowledge Review'}
+      <Button
+        onClick={handleAcknowledge}
+        disabled={submitting}
+        className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all gap-2 text-base px-6 py-5"
+      >
+        {submitting ? (
+          <>Acknowledging...</>
+        ) : (
+          <>
+            <PartyPopper className="h-5 w-5" />
+            Acknowledge Review
+          </>
+        )}
       </Button>
     </div>
   );

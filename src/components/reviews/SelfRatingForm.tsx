@@ -10,7 +10,7 @@ import { Progress } from '@/components/ui/progress';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { ANGLE_LABELS, ANGLE_COLORS, calculateWeightedScore, getAngleWeight } from '@/utils/score';
 import type { PerformanceReview, KpiCriterion, KpiAngle, KpiTemplate } from '@/types';
-import { Info } from 'lucide-react';
+import { Info, Sparkles, TrendingUp, Target } from 'lucide-react';
 
 interface Props {
   review: PerformanceReview;
@@ -103,17 +103,41 @@ export function SelfRatingForm({ review }: Props) {
     }
   }
 
+  const progressPercent = criteria.length > 0 ? (ratedCount / criteria.length) * 100 : 0;
+
   return (
     <div className="space-y-6">
-      {/* Score preview */}
-      <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4 flex items-center justify-between">
-        <div>
-          <p className="text-sm text-indigo-700 font-medium">Live Score Preview</p>
-          <p className="text-3xl font-bold text-indigo-900 mt-0.5">{liveScore.toFixed(1)}<span className="text-base font-normal text-indigo-600">/100</span></p>
+      {/* Enhanced score preview with gamification */}
+      <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-2 border-indigo-200 rounded-lg p-5 shadow-md hover:shadow-lg transition-shadow">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center gap-2">
+            <div className="p-2 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 shadow-md">
+              <TrendingUp className="h-5 w-5 text-white" />
+            </div>
+            <div>
+              <p className="text-sm text-indigo-700 font-semibold flex items-center gap-1">
+                Live Score Preview <Sparkles className="h-3.5 w-3.5" />
+              </p>
+              <p className="text-xs text-indigo-600">{ratedCount} of {criteria.length} rated</p>
+            </div>
+          </div>
+          <div className="text-right">
+            <p className="text-4xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              {liveScore.toFixed(1)}
+            </p>
+            <p className="text-xs text-indigo-600 font-medium">out of 100</p>
+          </div>
         </div>
-        <div className="text-right text-sm text-indigo-700">
-          <p>{ratedCount} of {criteria.length} rated</p>
-          <p>{requiredRated}/{requiredCount} required done</p>
+        <div className="space-y-1.5">
+          <Progress value={progressPercent} className="h-2.5" />
+          <div className="flex items-center justify-between text-xs">
+            <span className="text-indigo-700">
+              {requiredRated}/{requiredCount} required {requiredRated === requiredCount && '✓'}
+            </span>
+            <span className="text-indigo-600 font-medium">
+              {Math.round(progressPercent)}% complete {progressPercent === 100 && '🎉'}
+            </span>
+          </div>
         </div>
       </div>
 
@@ -128,14 +152,20 @@ export function SelfRatingForm({ review }: Props) {
             return sum + calculateWeightedScore(r.rating, parseFloat(c.weight), angleWeight);
           }, 0);
 
+          const angleRatedCount = angleCriteria.filter(c => ratings[c.id]?.rating != null).length;
+          const angleProgress = angleCriteria.length > 0 ? (angleRatedCount / angleCriteria.length) * 100 : 0;
+
           return (
-            <AccordionItem key={angle} value={angle} className="border rounded-lg overflow-hidden">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-slate-50">
+            <AccordionItem key={angle} value={angle} className="border-2 rounded-lg overflow-hidden hover:border-indigo-300 transition-colors">
+              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gradient-to-r hover:from-slate-50 hover:to-indigo-50 transition-colors">
                 <div className="flex items-center gap-3 w-full mr-2">
                   <Badge className={`text-xs ${ANGLE_COLORS[angle]}`}>{ANGLE_LABELS[angle]}</Badge>
                   <span className="text-xs text-slate-500">{angleWeight}% weight</span>
-                  <div className="ml-auto text-sm font-semibold text-slate-700">
-                    {angleScore.toFixed(1)} pts
+                  <div className="ml-auto flex items-center gap-2">
+                    <span className="text-xs text-slate-500">{angleRatedCount}/{angleCriteria.length}</span>
+                    <div className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+                      {angleScore.toFixed(1)} pts
+                    </div>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -172,17 +202,17 @@ export function SelfRatingForm({ review }: Props) {
                           </div>
                         )}
 
-                        {/* Rating buttons */}
+                        {/* Enhanced rating buttons with animations */}
                         <div className="flex gap-1.5 flex-wrap">
                           {steps.map(val => (
                             <button
                               key={val}
                               type="button"
                               onClick={() => setRating(c.id, val)}
-                              className={`w-9 h-9 rounded text-sm font-semibold transition-colors border ${
+                              className={`w-9 h-9 rounded-lg text-sm font-semibold transition-all border-2 ${
                                 r.rating === val
-                                  ? 'bg-indigo-600 text-white border-indigo-600'
-                                  : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-400 hover:text-indigo-600'
+                                  ? 'bg-gradient-to-br from-indigo-600 to-purple-600 text-white border-indigo-600 shadow-md scale-110'
+                                  : 'bg-white text-slate-600 border-slate-200 hover:border-indigo-400 hover:text-indigo-600 hover:scale-105 hover:shadow-sm'
                               }`}
                             >
                               {val}
@@ -191,8 +221,11 @@ export function SelfRatingForm({ review }: Props) {
                         </div>
 
                         {r.rating != null && (
-                          <div>
-                            <Progress value={(r.rating / maxScore) * 100} className="h-1.5" />
+                          <div className="space-y-1">
+                            <Progress value={(r.rating / maxScore) * 100} className="h-2" />
+                            <p className="text-xs text-indigo-600 font-medium text-right">
+                              {Math.round((r.rating / maxScore) * 100)}% {r.rating === maxScore && '🌟'}
+                            </p>
                           </div>
                         )}
 
@@ -224,17 +257,30 @@ export function SelfRatingForm({ review }: Props) {
         />
       </div>
 
-      {/* Actions */}
+      {/* Enhanced action buttons */}
       <div className="flex gap-3 justify-end">
-        <Button variant="outline" onClick={() => handleSubmit(true)} disabled={submitting}>
+        <Button
+          variant="outline"
+          onClick={() => handleSubmit(true)}
+          disabled={submitting}
+          className="border-2 hover:border-indigo-400 hover:text-indigo-600 transition-colors"
+        >
+          <Target className="h-4 w-4 mr-1.5" />
           Save Draft
         </Button>
         <Button
           onClick={() => handleSubmit(false)}
           disabled={submitting}
-          className="bg-indigo-600 hover:bg-indigo-700"
+          className="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-md hover:shadow-lg transition-all gap-1.5"
         >
-          {submitting ? 'Submitting...' : 'Submit Self-Rating'}
+          {submitting ? (
+            <>Submitting...</>
+          ) : (
+            <>
+              <Sparkles className="h-4 w-4" />
+              Submit Self-Rating
+            </>
+          )}
         </Button>
       </div>
     </div>
