@@ -55,27 +55,27 @@ export default async function ReviewDetailPage({ params }: Props) {
   return (
     <div className="space-y-6 max-w-3xl">
       <nav className="flex items-center gap-1.5 text-sm text-slate-500">
-        <Link href={isEmployee ? '/dashboard/reviews' : '/dashboard/team-reviews'} className="hover:text-slate-900">
+        <Link href={isEmployee ? '/dashboard/reviews' : '/dashboard/team-reviews'} className="hover:text-slate-900 truncate">
           {isEmployee ? 'My Reviews' : 'Team Reviews'}
         </Link>
-        <ChevronRight className="h-4 w-4" />
-        <span className="text-slate-900 font-medium">{period?.periodName}</span>
+        <ChevronRight className="h-4 w-4 shrink-0" />
+        <span className="text-slate-900 font-medium truncate">{period?.periodName}</span>
       </nav>
 
-      <div className="flex items-start justify-between gap-4 flex-wrap">
-        <div>
-          <h1 className="text-2xl font-bold text-slate-900">{period?.periodName}</h1>
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <h1 className="text-xl sm:text-2xl font-bold text-slate-900">{period?.periodName}</h1>
           {!isEmployee && <p className="text-slate-500 mt-0.5">{employee?.fullName}</p>}
         </div>
         {review.performanceGrade && (
-          <Badge className={`text-lg px-4 py-1 font-bold ${GRADE_COLORS[review.performanceGrade as PerformanceGrade]}`}>
+          <Badge className={`text-base sm:text-lg px-3 sm:px-4 py-1 font-bold shrink-0 ${GRADE_COLORS[review.performanceGrade as PerformanceGrade]}`}>
             Grade {review.performanceGrade}
           </Badge>
         )}
       </div>
 
       {/* Scores summary */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card>
           <CardContent className="p-4">
             <p className="text-xs text-slate-500">Self Score</p>
@@ -128,13 +128,13 @@ export default async function ReviewDetailPage({ params }: Props) {
                     const r = ratings.find(rt => rt.criterionId === c.id);
                     const variance = getRatingVariance(r?.selfRating ?? null, r?.supervisorRating ?? null);
                     return (
-                      <div key={c.id} className="p-4">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
+                      <div key={c.id} className="p-3 sm:p-4">
+                        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3 sm:gap-4">
+                          <div className="flex-1 min-w-0">
                             <p className="font-medium text-sm text-slate-900">{c.name}</p>
                             {c.nameEn && <p className="text-xs text-slate-500">{c.nameEn}</p>}
                           </div>
-                          <div className="flex items-center gap-3 shrink-0">
+                          <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                             {r?.selfRating != null && (
                               <div className="text-center">
                                 <p className="text-xs text-slate-400">Self</p>

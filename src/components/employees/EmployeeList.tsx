@@ -123,8 +123,8 @@ export function EmployeeList({ employees: initial, departments, currentUserId }:
         <span>{employees.filter(e => e.status === 'active').length} active</span>
       </div>
 
-      {/* Table */}
-      <div className="border rounded-lg overflow-hidden bg-white">
+      {/* Desktop Table */}
+      <div className="hidden md:block border rounded-lg overflow-hidden bg-white">
         <Table>
           <TableHeader>
             <TableRow className="bg-slate-50">
@@ -179,6 +179,64 @@ export function EmployeeList({ employees: initial, departments, currentUserId }:
             ))}
           </TableBody>
         </Table>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="md:hidden space-y-3">
+        {paged.length === 0 ? (
+          <div className="text-center py-12 text-slate-400 bg-white border rounded-lg">No employees found</div>
+        ) : paged.map(e => (
+          <div key={e.id} className="bg-white border rounded-lg p-4">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <Avatar className="h-10 w-10 shrink-0">
+                  <AvatarImage src={e.photoUrl ?? undefined} alt={e.fullName} />
+                  <AvatarFallback className="bg-indigo-100 text-indigo-700 text-xs font-semibold">{initials(e.fullName)}</AvatarFallback>
+                </Avatar>
+                <div className="min-w-0">
+                  <p className="font-medium text-sm truncate">{e.fullName}</p>
+                  <p className="text-xs text-slate-500 truncate">{e.email}</p>
+                </div>
+              </div>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="h-8 w-8 p-0 shrink-0"><MoreHorizontal className="h-4 w-4" /></Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => { setEditing(e); setFormOpen(true); }}>
+                    <Pencil className="h-4 w-4 mr-2" />Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleDeactivate(e.id)} className="text-red-600 focus:text-red-600" disabled={e.id === currentUserId}>
+                    <UserX className="h-4 w-4 mr-2" />Deactivate
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span className="text-slate-500">ID:</span>
+                <span className="ml-1 font-mono text-slate-700">{e.employeeId}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Role:</span>
+                <Badge variant="outline" className="text-xs ml-1">{ROLE_LABELS[e.role] ?? e.role}</Badge>
+              </div>
+              <div className="col-span-2">
+                <span className="text-slate-500">Position:</span>
+                <span className="ml-1 text-slate-700">{e.position}</span>
+              </div>
+              <div className="col-span-2">
+                <span className="text-slate-500">Department:</span>
+                <span className="ml-1 text-slate-700">{departments.find(d => d.id === e.departmentId)?.name ?? '—'}</span>
+              </div>
+              <div>
+                <span className="text-slate-500">Status:</span>
+                <Badge className={`text-xs capitalize ml-1 ${STATUS_COLORS[e.status] ?? ''}`}>{e.status}</Badge>
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
 
       {/* Pagination */}

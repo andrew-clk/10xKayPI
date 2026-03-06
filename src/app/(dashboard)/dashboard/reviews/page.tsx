@@ -79,31 +79,33 @@ export default async function ReviewsPage() {
             return (
               <Card key={r.id} className="hover:shadow-sm transition-shadow">
                 <CardContent className="p-4">
-                  <div className="flex items-center justify-between gap-4">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
                     <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <h3 className="font-semibold text-slate-900">{r.periodName}</h3>
+                      <div className="flex items-center gap-2 flex-wrap mb-2">
+                        <h3 className="font-semibold text-slate-900 text-sm sm:text-base">{r.periodName}</h3>
                         {r.performanceGrade && (
                           <Badge className={`text-xs font-bold ${GRADE_COLORS[r.performanceGrade as PerformanceGrade]}`}>
                             Grade {r.performanceGrade}
                           </Badge>
                         )}
+                      </div>
+                      <div className="flex gap-2 flex-wrap mb-2">
                         <Badge className={`text-xs ${STATUS_COLORS[r.selfRatingStatus]}`}>
                           Self: {STATUS_LABELS[r.selfRatingStatus]}
                         </Badge>
                         <Badge className={`text-xs ${STATUS_COLORS[r.supervisorRatingStatus]}`}>
-                          Supervisor: {STATUS_LABELS[r.supervisorRatingStatus]}
+                          Sup: {STATUS_LABELS[r.supervisorRatingStatus]}
                         </Badge>
                         {acked && <Badge className="text-xs bg-indigo-100 text-indigo-800">Acknowledged</Badge>}
                       </div>
-                      <div className="flex gap-4 mt-1.5 text-xs text-slate-500 flex-wrap">
-                        <span>Template: {r.templateName}</span>
+                      <div className="flex flex-col sm:flex-row sm:gap-4 gap-1 text-xs text-slate-500">
+                        <span className="truncate">Template: {r.templateName}</span>
                         <span>Due: {r.reviewDueDate}</span>
-                        {r.selfTotalScore && <span>Self Score: {parseFloat(r.selfTotalScore).toFixed(1)}</span>}
-                        {r.finalScore && <span>Final Score: {parseFloat(r.finalScore).toFixed(1)}</span>}
+                        {r.selfTotalScore && <span>Self: {parseFloat(r.selfTotalScore).toFixed(1)}</span>}
+                        {r.finalScore && <span>Final: {parseFloat(r.finalScore).toFixed(1)}</span>}
                       </div>
                     </div>
-                    <Button asChild variant="outline" size="sm" className="shrink-0 gap-1">
+                    <Button asChild variant="outline" size="sm" className="shrink-0 gap-1 w-full sm:w-auto">
                       <Link href={actionHref}>
                         {actionLabel}<ChevronRight className="h-3.5 w-3.5" />
                       </Link>

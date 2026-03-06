@@ -24,11 +24,11 @@ function AngleBar({ template }: { template: KpiTemplate }) {
           return w > 0 ? <div key={a} className={`${ANGLE_COLORS[a]}`} style={{ width: `${w}%` }} title={`${ANGLE_LABELS[a]}: ${w}%`} /> : null;
         })}
       </div>
-      <div className="grid grid-cols-2 gap-x-2 gap-y-0.5">
+      <div className="grid grid-cols-2 gap-x-2 gap-y-0.5 text-xs">
         {ANGLES.map(a => {
           const key = `${a}Weight` as keyof KpiTemplate;
           const w = parseFloat(template[key] as string || '0');
-          return <div key={a} className="flex items-center gap-1 text-xs text-slate-500"><span className={`inline-block w-2 h-2 rounded-full ${ANGLE_COLORS[a]}`} /><span>{ANGLE_LABELS[a]}: {w}%</span></div>;
+          return <div key={a} className="flex items-center gap-1 text-slate-500"><span className={`inline-block w-2 h-2 rounded-full ${ANGLE_COLORS[a]} shrink-0`} /><span className="truncate">{ANGLE_LABELS[a]}: {w}%</span></div>;
         })}
       </div>
     </div>

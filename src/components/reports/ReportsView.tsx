@@ -118,36 +118,36 @@ export function ReportsView({ reviews, departments }: Props) {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <div className="flex gap-3 flex-wrap items-center">
+      <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
         <Select value={periodFilter} onValueChange={setPeriodFilter}>
-          <SelectTrigger className="w-44"><SelectValue placeholder="All Periods" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="All Periods" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Periods</SelectItem>
             {periods.map(p => <SelectItem key={p.value} value={p.value}>{p.label}</SelectItem>)}
           </SelectContent>
         </Select>
         <Select value={deptFilter} onValueChange={setDeptFilter}>
-          <SelectTrigger className="w-44"><SelectValue placeholder="All Departments" /></SelectTrigger>
+          <SelectTrigger className="w-full sm:w-44"><SelectValue placeholder="All Departments" /></SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Departments</SelectItem>
             {departments.map(d => <SelectItem key={d.id} value={d.id}>{d.name}</SelectItem>)}
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={exportCSV} className="gap-1 ml-auto">
-          <Download className="h-4 w-4" />Export CSV
+        <Button variant="outline" onClick={exportCSV} className="gap-1 sm:ml-auto w-full sm:w-auto">
+          <Download className="h-4 w-4" /><span className="sm:inline">Export CSV</span>
         </Button>
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {[
           { label: 'Reviews Analyzed', value: filtered.length },
           { label: 'Average Score', value: avgScore > 0 ? avgScore.toFixed(1) : '—' },
           { label: 'Grade A', value: filtered.filter(r => r.performanceGrade === 'A').length },
           { label: 'Acknowledged', value: filtered.filter(r => r.employeeAcknowledged).length },
         ].map(s => (
-          <Card key={s.label}><CardContent className="p-4">
-            <p className="text-2xl font-bold text-slate-900">{s.value}</p>
+          <Card key={s.label}><CardContent className="p-3 sm:p-4">
+            <p className="text-xl sm:text-2xl font-bold text-slate-900">{s.value}</p>
             <p className="text-xs text-slate-500 mt-0.5">{s.label}</p>
           </CardContent></Card>
         ))}

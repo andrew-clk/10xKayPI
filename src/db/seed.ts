@@ -20,13 +20,10 @@ import { eq } from 'drizzle-orm';
 
 // Load env
 import { config } from 'dotenv';
-config({ path: '.env.local' });
+config({ path: '.env' });
 
 const sql = neon(process.env.DATABASE_URL!);
 const db = drizzle(sql, { schema });
-
-const PASS_HASH = await bcrypt.hash('demo1234', 12);
-const TODAY = new Date().toISOString().split('T')[0];
 
 // ─── IDs ─────────────────────────────────────────────────────────────────────
 
@@ -65,6 +62,9 @@ const PERIOD = {
 
 async function main() {
   console.log('🌱 Seeding PerformX demo data...\n');
+
+  const PASS_HASH = await bcrypt.hash('demo1234', 12);
+  const TODAY = new Date().toISOString().split('T')[0];
 
   // ── Company ──────────────────────────────────────────────────────────────
 

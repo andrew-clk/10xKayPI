@@ -7,29 +7,30 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-900">
-      <nav className="flex items-center justify-between px-6 py-4 max-w-7xl mx-auto">
+      <nav className="flex items-center justify-between px-4 sm:px-6 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-2">
           <div className="bg-indigo-600 rounded-lg p-1.5">
             <BarChart3 className="h-5 w-5 text-white" />
           </div>
-          <span className="text-xl font-bold text-white">Perform<span className="text-indigo-400">X</span></span>
+          <span className="text-lg sm:text-xl font-bold text-white">Perform<span className="text-indigo-400">X</span></span>
         </div>
-        <div className="flex items-center gap-3">
-          <Link href="/login"><Button variant="ghost" className="text-slate-300 hover:text-white">Sign In</Button></Link>
-          <Link href="/register"><Button className="bg-indigo-600 hover:bg-indigo-700 text-white">Start Free Trial</Button></Link>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <Link href="/login"><Button variant="ghost" size="sm" className="text-slate-300 hover:text-white text-xs sm:text-sm">Sign In</Button></Link>
+          <Link href="/register"><Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm hidden sm:inline-flex">Start Free Trial</Button></Link>
+          <Link href="/register"><Button size="sm" className="bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:hidden">Start</Button></Link>
         </div>
       </nav>
-      <div className="max-w-7xl mx-auto px-6 py-20 text-center">
-        <Badge className="bg-indigo-600/20 text-indigo-300 border-indigo-500/30 mb-6">14-day free trial • No credit card required</Badge>
-        <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">KPI Performance Reviews<br /><span className="text-indigo-400">Made Simple</span></h1>
-        <p className="text-xl text-slate-300 mb-10 max-w-2xl mx-auto">Multi-tenant SaaS platform for employee performance reviews using the flexible 4C KPI framework.</p>
-        <div className="flex items-center justify-center gap-4">
-          <Link href="/register"><Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8">Get Started Free</Button></Link>
-          <Link href="/login"><Button size="lg" variant="outline" className="border-slate-500 text-slate-200 hover:bg-slate-800">Sign In</Button></Link>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 text-center">
+        <Badge className="bg-indigo-600/20 text-indigo-300 border-indigo-500/30 mb-4 sm:mb-6 text-xs">14-day free trial • No credit card required</Badge>
+        <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-white mb-4 sm:mb-6 leading-tight">KPI Performance Reviews<br /><span className="text-indigo-400">Made Simple</span></h1>
+        <p className="text-base sm:text-xl text-slate-300 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">Multi-tenant SaaS platform for employee performance reviews using the flexible 4C KPI framework.</p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
+          <Link href="/register" className="w-full sm:w-auto"><Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 w-full sm:w-auto">Get Started Free</Button></Link>
+          <Link href="/login" className="w-full sm:w-auto"><Button size="lg" variant="outline" className="border-slate-500 text-slate-200 hover:bg-slate-800 hover:text-white w-full sm:w-auto">Sign In</Button></Link>
         </div>
       </div>
-      <div className="max-w-7xl mx-auto px-6 py-16">
-        <h2 className="text-3xl font-bold text-white text-center mb-12">Everything you need for performance management</h2>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
+        <h2 className="text-2xl sm:text-3xl font-bold text-white text-center mb-8 sm:mb-12">Everything you need for performance management</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {[
             { icon: Target, title: '4C KPI Framework', desc: 'Commitment, Contribution, Character, Competency — flexible weights totaling 100%.' },
