@@ -26,7 +26,7 @@ export default function HomePage() {
         <p className="text-base sm:text-xl text-slate-300 mb-8 sm:mb-10 max-w-2xl mx-auto px-2">Multi-tenant SaaS platform for employee performance reviews using the flexible 4C KPI framework.</p>
         <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-4 px-4">
           <Link href="/register" className="w-full sm:w-auto"><Button size="lg" className="bg-indigo-600 hover:bg-indigo-700 text-white px-8 w-full sm:w-auto">Get Started Free</Button></Link>
-          <Link href="/login" className="w-full sm:w-auto"><Button size="lg" variant="outline" className="border-slate-500 text-slate-200 hover:bg-slate-800 hover:text-white w-full sm:w-auto">Sign In</Button></Link>
+          <Link href="/login" className="w-full sm:w-auto"><Button size="lg" variant="outline" className="border-slate-400 bg-transparent text-white hover:bg-slate-700 hover:border-slate-300 w-full sm:w-auto">Sign In</Button></Link>
         </div>
       </div>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16">
