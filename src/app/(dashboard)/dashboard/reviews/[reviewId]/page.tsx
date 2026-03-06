@@ -87,28 +87,32 @@ export default async function ReviewDetailPage({ params }: Props) {
             </p>
           </CardContent>
         </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-500">Supervisor Score</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">
-              {review.supervisorTotalScore ? parseFloat(review.supervisorTotalScore).toFixed(1) : '—'}
-            </p>
-            <p className={`text-xs mt-1 capitalize ${review.supervisorRatingStatus === 'submitted' ? 'text-green-600' : 'text-slate-400'}`}>
-              {review.supervisorRatingStatus.replace('_', ' ')}
-            </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="p-4">
-            <p className="text-xs text-slate-500">Final Score</p>
-            <p className="text-xl font-bold text-indigo-700 mt-1">
-              {review.finalScore ? parseFloat(review.finalScore).toFixed(1) : '—'}
-            </p>
-            <p className={`text-xs mt-1 ${review.employeeAcknowledged ? 'text-green-600' : 'text-slate-400'}`}>
-              {review.employeeAcknowledged ? 'Acknowledged' : 'Pending acknowledgment'}
-            </p>
-          </CardContent>
-        </Card>
+        {(review.supervisorRatingStatus === 'submitted' || !isEmployee) && (
+          <Card>
+            <CardContent className="p-4">
+              <p className="text-xs text-slate-500">Supervisor Score</p>
+              <p className="text-xl font-bold text-slate-900 mt-1">
+                {review.supervisorTotalScore ? parseFloat(review.supervisorTotalScore).toFixed(1) : '—'}
+              </p>
+              <p className={`text-xs mt-1 capitalize ${review.supervisorRatingStatus === 'submitted' ? 'text-green-600' : 'text-slate-400'}`}>
+                {review.supervisorRatingStatus.replace('_', ' ')}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+        {(review.supervisorRatingStatus === 'submitted' || !isEmployee) && (
+          <Card>
+            <CardContent className="p-4">
+              <p className="text-xs text-slate-500">Final Score</p>
+              <p className="text-xl font-bold text-indigo-700 mt-1">
+                {review.finalScore ? parseFloat(review.finalScore).toFixed(1) : '—'}
+              </p>
+              <p className={`text-xs mt-1 ${review.employeeAcknowledged ? 'text-green-600' : 'text-slate-400'}`}>
+                {review.employeeAcknowledged ? 'Acknowledged' : 'Pending acknowledgment'}
+              </p>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* Criteria breakdown */}
@@ -141,13 +145,13 @@ export default async function ReviewDetailPage({ params }: Props) {
                                 <p className="font-semibold text-slate-700">{r.selfRating}</p>
                               </div>
                             )}
-                            {r?.supervisorRating != null && (
+                            {r?.supervisorRating != null && (review.supervisorRatingStatus === 'submitted' || !isEmployee) && (
                               <div className="text-center">
                                 <p className="text-xs text-slate-400">Supervisor</p>
                                 <p className="font-semibold text-indigo-700">{r.supervisorRating}</p>
                               </div>
                             )}
-                            {variance && (
+                            {variance && (review.supervisorRatingStatus === 'submitted' || !isEmployee) && (
                               <Badge className={`text-xs ${VARIANCE_BADGE[variance]}`}>
                                 {variance === 'agree' ? <CheckCircle2 className="h-3 w-3 mr-1 inline" /> : <AlertTriangle className="h-3 w-3 mr-1 inline" />}
                                 {variance}
@@ -155,10 +159,10 @@ export default async function ReviewDetailPage({ params }: Props) {
                             )}
                           </div>
                         </div>
-                        {(r?.selfComments || r?.supervisorComments) && (
+                        {((r?.selfComments && isEmployee) || (r?.supervisorComments && (review.supervisorRatingStatus === 'submitted' || !isEmployee))) && (
                           <div className="mt-2 space-y-1 text-xs text-slate-500">
                             {r.selfComments && <p><span className="font-medium">Self:</span> {r.selfComments}</p>}
-                            {r.supervisorComments && <p><span className="font-medium">Supervisor:</span> {r.supervisorComments}</p>}
+                            {r.supervisorComments && (review.supervisorRatingStatus === 'submitted' || !isEmployee) && <p><span className="font-medium">Supervisor:</span> {r.supervisorComments}</p>}
                           </div>
                         )}
                       </div>
@@ -172,7 +176,7 @@ export default async function ReviewDetailPage({ params }: Props) {
       )}
 
       {/* Feedback */}
-      {(review.strengths || review.improvementAreas || review.actionPlan || review.supervisorComments) && (
+      {(review.supervisorRatingStatus === 'submitted' || !isEmployee) && (review.strengths || review.improvementAreas || review.actionPlan || review.supervisorComments || review.employeeComments) && (
         <div className="space-y-3">
           <h2 className="font-semibold text-slate-900">Feedback</h2>
           {review.supervisorComments && (
