@@ -91,6 +91,39 @@ export function EmployeeDashboard({ user, reviews }: Props) {
         <p className="text-slate-500 mt-1">{user.position}</p>
       </div>
 
+      {/* Pending action with animation - moved to top */}
+      {pendingAction && (
+        <Card className="border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-blue-50 shadow-lg animate-pulse">
+          <CardContent className="p-4 flex items-center justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-full bg-indigo-600 animate-bounce">
+                <Zap className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <p className="font-bold text-indigo-900 flex items-center gap-1">
+                  🎯 Action Required
+                </p>
+                <p className="text-sm text-indigo-700 mt-0.5">
+                  {pendingAction.selfRatingStatus !== 'submitted'
+                    ? `Complete your self-rating for ${pendingAction.periodName}`
+                    : `Acknowledge your review for ${pendingAction.periodName}`
+                  }
+                </p>
+              </div>
+            </div>
+            <Button asChild size="sm" className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 gap-1 shrink-0 shadow-md">
+              <Link href={
+                pendingAction.selfRatingStatus !== 'submitted'
+                  ? `/dashboard/reviews/${pendingAction.id}/self-rating`
+                  : `/dashboard/reviews/${pendingAction.id}/acknowledge`
+              }>
+                Start Now <ChevronRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
       {/* KPI Cards with animation */}
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         <Card className="border-2 border-indigo-200 hover:shadow-lg transition-all hover:scale-105">
@@ -127,81 +160,6 @@ export function EmployeeDashboard({ user, reviews }: Props) {
           </CardContent>
         </Card>
       </div>
-
-      {/* Achievements Section */}
-      <Card className="border-2 border-yellow-200 bg-gradient-to-r from-yellow-50 to-orange-50">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <Trophy className="h-5 w-5 text-yellow-600" />
-              <CardTitle className="text-base">Achievements</CardTitle>
-            </div>
-            <Badge className="bg-yellow-500 text-white">{unlockedCount}/{achievements.length}</Badge>
-          </div>
-          <div className="mt-2">
-            <Progress value={achievementProgress} className="h-2" />
-            <p className="text-xs text-slate-500 mt-1">{Math.round(achievementProgress)}% Complete</p>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
-            {achievements.map(achievement => (
-              <div
-                key={achievement.id}
-                className={`relative p-3 rounded-lg border-2 transition-all ${
-                  achievement.unlocked
-                    ? `${achievement.color} hover:shadow-md cursor-pointer`
-                    : 'bg-slate-50 text-slate-300 border-slate-200 opacity-50'
-                }`}
-                title={achievement.desc}
-              >
-                <div className="flex flex-col items-center text-center">
-                  <achievement.icon className={`h-6 w-6 mb-1 ${achievement.unlocked ? '' : 'text-slate-300'}`} />
-                  <p className="text-xs font-semibold">{achievement.name}</p>
-                </div>
-                {achievement.unlocked && (
-                  <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1">
-                    <CheckCircle2 className="h-3 w-3 text-white" />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Pending action with animation */}
-      {pendingAction && (
-        <Card className="border-2 border-indigo-300 bg-gradient-to-r from-indigo-50 to-blue-50 shadow-lg animate-pulse">
-          <CardContent className="p-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-full bg-indigo-600 animate-bounce">
-                <Zap className="h-4 w-4 text-white" />
-              </div>
-              <div>
-                <p className="font-bold text-indigo-900 flex items-center gap-1">
-                  🎯 Action Required
-                </p>
-                <p className="text-sm text-indigo-700 mt-0.5">
-                  {pendingAction.selfRatingStatus !== 'submitted'
-                    ? `Complete your self-rating for ${pendingAction.periodName}`
-                    : `Acknowledge your review for ${pendingAction.periodName}`
-                  }
-                </p>
-              </div>
-            </div>
-            <Button asChild size="sm" className="bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 gap-1 shrink-0 shadow-md">
-              <Link href={
-                pendingAction.selfRatingStatus !== 'submitted'
-                  ? `/dashboard/reviews/${pendingAction.id}/self-rating`
-                  : `/dashboard/reviews/${pendingAction.id}/acknowledge`
-              }>
-                Start Now <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      )}
 
       {/* Score trend chart */}
       {chartData.length > 1 && (
@@ -280,6 +238,48 @@ export function EmployeeDashboard({ user, reviews }: Props) {
           </Card>
         ))}
       </div>
+
+      {/* Achievements Section - moved to bottom */}
+      <Card className="border-2 border-yellow-200 bg-gradient-to-r from-yellow-50 to-orange-50">
+        <CardHeader className="pb-3">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Trophy className="h-5 w-5 text-yellow-600" />
+              <CardTitle className="text-base">Achievements</CardTitle>
+            </div>
+            <Badge className="bg-yellow-500 text-white">{unlockedCount}/{achievements.length}</Badge>
+          </div>
+          <div className="mt-2">
+            <Progress value={achievementProgress} className="h-2" />
+            <p className="text-xs text-slate-500 mt-1">{Math.round(achievementProgress)}% Complete</p>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+            {achievements.map(achievement => (
+              <div
+                key={achievement.id}
+                className={`relative p-3 rounded-lg border-2 transition-all ${
+                  achievement.unlocked
+                    ? `${achievement.color} hover:shadow-md cursor-pointer`
+                    : 'bg-slate-50 text-slate-300 border-slate-200 opacity-50'
+                }`}
+                title={achievement.desc}
+              >
+                <div className="flex flex-col items-center text-center">
+                  <achievement.icon className={`h-6 w-6 mb-1 ${achievement.unlocked ? '' : 'text-slate-300'}`} />
+                  <p className="text-xs font-semibold">{achievement.name}</p>
+                </div>
+                {achievement.unlocked && (
+                  <div className="absolute -top-1 -right-1 bg-green-500 rounded-full p-1">
+                    <CheckCircle2 className="h-3 w-3 text-white" />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

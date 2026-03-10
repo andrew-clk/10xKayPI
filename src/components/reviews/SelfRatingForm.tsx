@@ -157,13 +157,15 @@ export function SelfRatingForm({ review }: Props) {
 
           return (
             <AccordionItem key={angle} value={angle} className="border-2 rounded-lg overflow-hidden hover:border-indigo-300 transition-colors">
-              <AccordionTrigger className="px-4 py-3 hover:no-underline hover:bg-gradient-to-r hover:from-slate-50 hover:to-indigo-50 transition-colors">
-                <div className="flex items-center gap-3 w-full mr-2">
-                  <Badge className={`text-xs ${ANGLE_COLORS[angle]}`}>{ANGLE_LABELS[angle]}</Badge>
-                  <span className="text-xs text-slate-500">{angleWeight}% weight</span>
-                  <div className="ml-auto flex items-center gap-2">
-                    <span className="text-xs text-slate-500">{angleRatedCount}/{angleCriteria.length}</span>
-                    <div className="text-sm font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+              <AccordionTrigger className="px-5 py-4 hover:no-underline hover:bg-gradient-to-r hover:from-slate-50 hover:to-indigo-50 transition-colors">
+                <div className="flex items-center gap-4 w-full mr-2">
+                  <div className="flex-1 flex items-center gap-3">
+                    <h3 className="text-lg md:text-xl font-bold text-slate-900">{ANGLE_LABELS[angle]}</h3>
+                    <Badge className={`text-xs ${ANGLE_COLORS[angle]}`}>{angleWeight}% weight</Badge>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="text-sm text-slate-500">{angleRatedCount}/{angleCriteria.length}</span>
+                    <div className="text-base md:text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
                       {angleScore.toFixed(1)} pts
                     </div>
                   </div>
