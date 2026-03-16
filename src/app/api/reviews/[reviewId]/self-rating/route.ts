@@ -7,7 +7,7 @@ import { requireAuth } from '@/lib/auth';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { calculateWeightedScore, getAngleWeight, getPerformanceGrade } from '@/utils/score';
-import type { KpiAngle } from '@/types';
+import type { KpiAngle, KpiTemplate } from '@/types';
 
 const ratingSchema = z.object({
   criterionId: z.string().uuid(),
