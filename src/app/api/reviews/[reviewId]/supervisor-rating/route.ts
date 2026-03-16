@@ -7,7 +7,7 @@ import { requireAuth } from '@/lib/auth';
 import { eq, and } from 'drizzle-orm';
 import { z } from 'zod';
 import { calculateWeightedScore, getAngleWeight, getPerformanceGrade } from '@/utils/score';
-import type { KpiAngle } from '@/types';
+import type { KpiAngle, KpiTemplate } from '@/types';
 
 const ratingSchema = z.object({
   criterionId: z.string().uuid(),
@@ -32,10 +32,12 @@ export async function POST(
     const user = await requireAuth();
     const { reviewId } = await params;
 
-    const [review] = await db
+    const reviewResult = await db
       .select()
       .from(performanceReviews)
       .where(and(eq(performanceReviews.id, reviewId), eq(performanceReviews.companyId, user.companyId)));
+
+    const review = reviewResult[0];
 
     if (!review) return NextResponse.json({ error: 'Review not found' }, { status: 404 });
 
@@ -56,7 +58,8 @@ export async function POST(
 
     const { ratings, strengths, improvementAreas, actionPlan, supervisorComments, draft } = parsed.data;
 
-    const [template] = await db.select().from(kpiTemplates).where(eq(kpiTemplates.id, review.templateId));
+    const templateResult = await db.select().from(kpiTemplates).where(eq(kpiTemplates.id, review.templateId));
+    const template = templateResult[0];
     const criteria = await db.select().from(kpiCriteria).where(eq(kpiCriteria.templateId, review.templateId));
 
     if (!draft) {
@@ -73,7 +76,7 @@ export async function POST(
       const criterion = criteria.find(c => c.id === r.criterionId);
       if (!criterion) continue;
 
-      const angleWeight = getAngleWeight(template, criterion.angle as KpiAngle);
+      const angleWeight = getAngleWeight(template as KpiTemplate, criterion.angle as KpiAngle);
       const criterionWeight = parseFloat(criterion.weight);
       const supervisorWeighted = calculateWeightedScore(r.supervisorRating, criterionWeight, angleWeight);
 

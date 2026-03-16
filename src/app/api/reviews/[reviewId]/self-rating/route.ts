@@ -129,10 +129,12 @@ export async function POST(
 
     // Notify supervisor if submitted
     if (!draft && review.supervisorId) {
-      const [supervisorRows] = await db
+      const supervisorResult = await db
         .select({ id: employees.id, fullName: employees.fullName })
         .from(employees)
         .where(eq(employees.id, review.supervisorId));
+
+      const supervisorRows = supervisorResult[0];
 
       if (supervisorRows) {
         await db.insert(notifications).values({

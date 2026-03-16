@@ -144,9 +144,7 @@ export const employees = pgTable(
     }),
     position: text('position').notNull(),
     supervisorId: uuid('supervisor_id'),
-    kpiTemplateId: uuid('kpi_template_id').references(() => kpiTemplates.id, {
-      onDelete: 'set null',
-    }),
+    kpiTemplateId: uuid('kpi_template_id'),
     joinDate: date('join_date').notNull(),
     terminationDate: date('termination_date'),
     status: employeeStatusEnum('status').notNull().default('active'),
