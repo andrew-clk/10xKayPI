@@ -29,10 +29,12 @@ export async function POST(
     const user = await requireAuth();
     const { reviewId } = await params;
 
-    const [review] = await db
+    const reviewResult = await db
       .select()
       .from(performanceReviews)
       .where(and(eq(performanceReviews.id, reviewId), eq(performanceReviews.companyId, user.companyId)));
+
+    const review = reviewResult[0];
 
     if (!review) return NextResponse.json({ error: 'Review not found' }, { status: 404 });
     if (review.employeeId !== user.id) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
@@ -49,10 +51,12 @@ export async function POST(
     const { ratings, selfRatingNotes, draft } = parsed.data;
 
     // Get template + criteria for score calculation
-    const [template] = await db
+    const templateResult = await db
       .select()
       .from(kpiTemplates)
       .where(eq(kpiTemplates.id, review.templateId));
+
+    const template = templateResult[0];
 
     const criteria = await db
       .select()
@@ -73,7 +77,7 @@ export async function POST(
       const criterion = criteria.find(c => c.id === r.criterionId);
       if (!criterion) continue;
 
-      const angleWeight = getAngleWeight(template, criterion.angle as KpiAngle);
+      const angleWeight = getAngleWeight(template as KpiTemplate, criterion.angle as KpiAngle);
       const criterionWeight = parseFloat(criterion.weight);
       const selfWeighted = calculateWeightedScore(r.selfRating, criterionWeight, angleWeight);
 

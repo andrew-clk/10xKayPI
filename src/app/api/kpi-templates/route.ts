@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Angle weights must sum to 100% (currently ${sum.toFixed(2)}%)` }, { status: 400 });
     }
 
-    const [template] = await db.insert(kpiTemplates).values({
+    const templateResult = await db.insert(kpiTemplates).values({
       companyId: user.companyId,
       name: d.name,
       positionType: d.positionType,
@@ -92,6 +92,8 @@ export async function POST(request: NextRequest) {
       characterWeight: d.characterWeight,
       competencyWeight: d.competencyWeight,
     }).returning();
+
+    const template = Array.isArray(templateResult) ? templateResult[0] : (templateResult as any).rows?.[0];
 
     const insertedCriteria = d.criteria && d.criteria.length > 0
       ? await db.insert(kpiCriteria).values(
