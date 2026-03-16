@@ -13,6 +13,7 @@ const createSchema = z.object({
   position: z.string().min(1),
   departmentId: z.string().uuid().optional().nullable(),
   supervisorId: z.string().uuid().optional().nullable(),
+  kpiTemplateId: z.string().uuid().optional().nullable(),
   joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   role: z.enum(['super_admin', 'manager', 'employee']).default('employee'),
   status: z.enum(['active', 'inactive', 'terminated']).default('active'),
@@ -108,6 +109,7 @@ export async function POST(request: NextRequest) {
         companyId: user.companyId,
         departmentId: data.departmentId ?? null,
         supervisorId: data.supervisorId ?? null,
+        kpiTemplateId: data.kpiTemplateId ?? null,
         phone: data.phone ?? null,
         photoUrl: data.photoUrl ?? null,
       })

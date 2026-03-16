@@ -13,6 +13,7 @@ const updateSchema = z.object({
   position: z.string().min(1).optional(),
   departmentId: z.string().uuid().nullable().optional(),
   supervisorId: z.string().uuid().nullable().optional(),
+  kpiTemplateId: z.string().uuid().nullable().optional(),
   joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   terminationDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
   role: z.enum(['super_admin', 'manager', 'employee']).optional(),

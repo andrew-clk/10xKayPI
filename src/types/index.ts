@@ -42,6 +42,7 @@ export interface Employee {
   departmentId?: string | null;
   position: string;
   supervisorId?: string | null;
+  kpiTemplateId?: string | null;
   joinDate: string;
   terminationDate?: string | null;
   status: EmployeeStatus;
@@ -51,6 +52,7 @@ export interface Employee {
   // Joined fields
   department?: Department | null;
   supervisor?: Employee | null;
+  kpiTemplate?: KpiTemplate | null;
 }
 
 export interface Department {

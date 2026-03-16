@@ -10,7 +10,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
-import type { Employee, Department } from '@/types';
+import type { Employee, Department, KpiTemplate } from '@/types';
 
 const schema = z.object({
   employeeId: z.string().min(1, 'Employee ID is required'),
@@ -20,6 +20,7 @@ const schema = z.object({
   position: z.string().min(1, 'Position is required'),
   departmentId: z.string().uuid().optional().nullable(),
   supervisorId: z.string().uuid().optional().nullable(),
+  kpiTemplateId: z.string().uuid().optional().nullable(),
   joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD format'),
   role: z.enum(['super_admin', 'manager', 'employee']),
   status: z.enum(['active', 'inactive', 'terminated']),
@@ -33,11 +34,12 @@ interface Props {
   employee?: Employee | null;
   employees: Employee[];
   departments: Department[];
+  kpiTemplates: KpiTemplate[];
   currentUserId: string;
   onSuccess: () => void;
 }
 
-export function EmployeeForm({ open, onOpenChange, employee, employees, departments, currentUserId, onSuccess }: Props) {
+export function EmployeeForm({ open, onOpenChange, employee, employees, departments, kpiTemplates, currentUserId, onSuccess }: Props) {
   const isEditing = !!employee;
 
   const form = useForm<FormValues>({
@@ -50,6 +52,7 @@ export function EmployeeForm({ open, onOpenChange, employee, employees, departme
       position: '',
       departmentId: null,
       supervisorId: null,
+      kpiTemplateId: null,
       joinDate: new Date().toISOString().split('T')[0],
       role: 'employee',
       status: 'active',
@@ -66,6 +69,7 @@ export function EmployeeForm({ open, onOpenChange, employee, employees, departme
         position: employee.position,
         departmentId: employee.departmentId ?? null,
         supervisorId: employee.supervisorId ?? null,
+        kpiTemplateId: employee.kpiTemplateId ?? null,
         joinDate: employee.joinDate,
         role: employee.role,
         status: employee.status,
@@ -73,7 +77,7 @@ export function EmployeeForm({ open, onOpenChange, employee, employees, departme
     } else {
       form.reset({
         employeeId: '', fullName: '', email: '', phone: '', position: '',
-        departmentId: null, supervisorId: null,
+        departmentId: null, supervisorId: null, kpiTemplateId: null,
         joinDate: new Date().toISOString().split('T')[0],
         role: 'employee', status: 'active',
       });
@@ -93,6 +97,7 @@ export function EmployeeForm({ open, onOpenChange, employee, employees, departme
           phone: values.phone || null,
           departmentId: values.departmentId || null,
           supervisorId: values.supervisorId || null,
+          kpiTemplateId: values.kpiTemplateId || null,
         }),
       });
 
@@ -167,6 +172,23 @@ export function EmployeeForm({ open, onOpenChange, employee, employees, departme
                 </FormItem>
               )} />
             </div>
+            <FormField control={form.control} name="kpiTemplateId" render={({ field }) => (
+              <FormItem>
+                <FormLabel>KPI Template</FormLabel>
+                <Select onValueChange={v => field.onChange(v === 'none' ? null : v)} value={field.value ?? 'none'}>
+                  <FormControl><SelectTrigger><SelectValue placeholder="Select KPI template..." /></SelectTrigger></FormControl>
+                  <SelectContent>
+                    <SelectItem value="none">None</SelectItem>
+                    {kpiTemplates.filter(t => t.isActive).map(t => (
+                      <SelectItem key={t.id} value={t.id}>
+                        {t.name} ({t.positionType})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )} />
             <div className="grid grid-cols-2 gap-3">
               <FormField control={form.control} name="role" render={({ field }) => (
                 <FormItem>

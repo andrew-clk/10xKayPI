@@ -144,6 +144,9 @@ export const employees = pgTable(
     }),
     position: text('position').notNull(),
     supervisorId: uuid('supervisor_id'),
+    kpiTemplateId: uuid('kpi_template_id').references(() => kpiTemplates.id, {
+      onDelete: 'set null',
+    }),
     joinDate: date('join_date').notNull(),
     terminationDate: date('termination_date'),
     status: employeeStatusEnum('status').notNull().default('active'),
@@ -366,6 +369,10 @@ export const employeesRelations = relations(employees, ({ one, many }) => ({
     fields: [employees.supervisorId],
     references: [employees.id],
     relationName: 'employeeSupervisor',
+  }),
+  kpiTemplate: one(kpiTemplates, {
+    fields: [employees.kpiTemplateId],
+    references: [kpiTemplates.id],
   }),
   subordinates: many(employees, { relationName: 'employeeSupervisor' }),
   reviews: many(performanceReviews, { relationName: 'employeeReviews' }),

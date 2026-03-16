@@ -66,7 +66,11 @@ export async function GET(request: NextRequest) {
         .where(and(eq(kpiTemplates.companyId, company.id), eq(kpiTemplates.isActive, true)));
 
       for (const emp of activeEmployees) {
-        const template = templates.find(t => t.positionType === emp.position) ?? templates[0];
+        // Use employee's assigned template first, then fallback to position matching
+        let template = emp.kpiTemplateId ? templates.find(t => t.id === emp.kpiTemplateId) : null;
+        if (!template) {
+          template = templates.find(t => t.positionType === emp.position) ?? templates[0];
+        }
         if (!template) continue;
 
         try {

@@ -1,18 +1,19 @@
 import { requireRole } from '@/lib/auth';
 import { db } from '@/db';
-import { employees, departments } from '@/db/schema';
+import { employees, departments, kpiTemplates } from '@/db/schema';
 import { eq, asc } from 'drizzle-orm';
 import { EmployeeList } from '@/components/employees/EmployeeList';
-import type { Employee, Department } from '@/types';
+import type { Employee, Department, KpiTemplate } from '@/types';
 
 export const metadata = { title: 'Employees' };
 
 export default async function EmployeesPage() {
   const user = await requireRole(['super_admin', 'manager']);
 
-  const [allEmployees, allDepartments] = await Promise.all([
+  const [allEmployees, allDepartments, allKpiTemplates] = await Promise.all([
     db.select().from(employees).where(eq(employees.companyId, user.companyId)).orderBy(asc(employees.fullName)),
     db.select().from(departments).where(eq(departments.companyId, user.companyId)).orderBy(asc(departments.name)),
+    db.select().from(kpiTemplates).where(eq(kpiTemplates.companyId, user.companyId)).orderBy(asc(kpiTemplates.name)),
   ]);
 
   return (
@@ -24,6 +25,7 @@ export default async function EmployeesPage() {
       <EmployeeList
         employees={allEmployees as Employee[]}
         departments={allDepartments as Department[]}
+        kpiTemplates={allKpiTemplates as KpiTemplate[]}
         currentUserId={user.id}
       />
     </div>

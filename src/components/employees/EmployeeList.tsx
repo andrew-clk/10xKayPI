@@ -12,11 +12,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { EmployeeForm } from './EmployeeForm';
-import type { Employee, Department } from '@/types';
+import type { Employee, Department, KpiTemplate } from '@/types';
 
 interface Props {
   employees: Employee[];
   departments: Department[];
+  kpiTemplates: KpiTemplate[];
   currentUserId: string;
 }
 
@@ -32,7 +33,7 @@ const ROLE_LABELS: Record<string, string> = {
   employee: 'Employee',
 };
 
-export function EmployeeList({ employees: initial, departments, currentUserId }: Props) {
+export function EmployeeList({ employees: initial, departments, kpiTemplates, currentUserId }: Props) {
   const router = useRouter();
   const [employees, setEmployees] = useState(initial);
   const [search, setSearch] = useState('');
@@ -256,6 +257,7 @@ export function EmployeeList({ employees: initial, departments, currentUserId }:
         employee={editing}
         employees={employees}
         departments={departments}
+        kpiTemplates={kpiTemplates}
         currentUserId={currentUserId}
         onSuccess={handleSuccess}
       />
