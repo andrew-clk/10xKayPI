@@ -38,11 +38,13 @@ export async function PATCH(
       return NextResponse.json({ error: parsed.error.issues[0]?.message }, { status: 422 });
     }
 
-    const [updated] = await db
+    const result = await db
       .update(employees)
       .set({ ...parsed.data, updatedAt: new Date() })
       .where(and(eq(employees.id, id), eq(employees.companyId, user.companyId)))
       .returning();
+
+    const updated = Array.isArray(result) ? result[0] : result.rows?.[0];
 
     if (!updated) {
       return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
@@ -66,11 +68,13 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const [updated] = await db
+    const result = await db
       .update(employees)
       .set({ status: 'inactive', updatedAt: new Date() })
       .where(and(eq(employees.id, id), eq(employees.companyId, user.companyId)))
       .returning({ id: employees.id });
+
+    const updated = Array.isArray(result) ? result[0] : result.rows?.[0];
 
     if (!updated) {
       return NextResponse.json({ error: 'Employee not found' }, { status: 404 });

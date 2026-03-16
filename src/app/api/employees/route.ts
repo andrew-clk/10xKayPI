@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Employee ID or email already exists.' }, { status: 409 });
     }
 
-    const [created] = await db
+    const result = await db
       .insert(employees)
       .values({
         ...data,
@@ -114,6 +114,8 @@ export async function POST(request: NextRequest) {
         photoUrl: data.photoUrl ?? null,
       })
       .returning();
+
+    const created = Array.isArray(result) ? result[0] : result.rows?.[0];
 
     return NextResponse.json(created, { status: 201 });
   } catch {

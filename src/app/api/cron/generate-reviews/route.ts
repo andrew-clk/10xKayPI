@@ -44,7 +44,7 @@ export async function GET(request: NextRequest) {
       const reviewDueDate = addDays(periodEnd, company.reviewDueDays);
       const monthName = format(now, 'MMMM yyyy');
 
-      const [period] = await db.insert(reviewPeriods).values({
+      const periodResult = await db.insert(reviewPeriods).values({
         companyId: company.id,
         periodName: monthName,
         year,
@@ -54,6 +54,8 @@ export async function GET(request: NextRequest) {
         reviewDueDate: format(reviewDueDate, 'yyyy-MM-dd'),
         status: 'open',
       }).returning();
+
+      const period = Array.isArray(periodResult) ? periodResult[0] : periodResult.rows?.[0];
 
       const activeEmployees = await db
         .select()
@@ -74,7 +76,7 @@ export async function GET(request: NextRequest) {
         if (!template) continue;
 
         try {
-          const [review] = await db.insert(performanceReviews).values({
+          const reviewResult = await db.insert(performanceReviews).values({
             companyId: company.id,
             employeeId: emp.id,
             reviewPeriodId: period.id,
@@ -83,6 +85,8 @@ export async function GET(request: NextRequest) {
             selfRatingStatus: 'not_started',
             supervisorRatingStatus: 'not_started',
           }).returning();
+
+          const review = Array.isArray(reviewResult) ? reviewResult[0] : reviewResult.rows?.[0];
 
           await db.insert(notifications).values({
             companyId: company.id,

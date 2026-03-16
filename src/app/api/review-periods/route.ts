@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'A review period already exists for this month.' }, { status: 409 });
     }
 
-    const [period] = await db.insert(reviewPeriods).values({
+    const periodResult = await db.insert(reviewPeriods).values({
       companyId: user.companyId,
       periodName,
       year,
@@ -86,6 +86,8 @@ export async function POST(request: NextRequest) {
       reviewDueDate,
       status: 'open',
     }).returning();
+
+    const period = Array.isArray(periodResult) ? periodResult[0] : periodResult.rows?.[0];
 
     let reviewsCreated = 0;
 
@@ -109,7 +111,7 @@ export async function POST(request: NextRequest) {
         if (!template) continue;
 
         try {
-          const [review] = await db.insert(performanceReviews).values({
+          const reviewResult = await db.insert(performanceReviews).values({
             companyId: user.companyId,
             employeeId: emp.id,
             reviewPeriodId: period.id,
@@ -118,6 +120,8 @@ export async function POST(request: NextRequest) {
             selfRatingStatus: 'not_started',
             supervisorRatingStatus: 'not_started',
           }).returning();
+
+          const review = Array.isArray(reviewResult) ? reviewResult[0] : reviewResult.rows?.[0];
 
           await db.insert(notifications).values({
             companyId: user.companyId,
