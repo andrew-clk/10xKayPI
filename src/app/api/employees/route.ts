@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
       })
       .returning();
 
-    const created = Array.isArray(result) ? result[0] : result.rows?.[0];
+    const created = Array.isArray(result) ? result[0] : (result as any).rows?.[0];
 
     return NextResponse.json(created, { status: 201 });
   } catch {

@@ -44,7 +44,7 @@ export async function PATCH(
       .where(and(eq(employees.id, id), eq(employees.companyId, user.companyId)))
       .returning();
 
-    const updated = Array.isArray(result) ? result[0] : result.rows?.[0];
+    const updated = Array.isArray(result) ? result[0] : (result as any).rows?.[0];
 
     if (!updated) {
       return NextResponse.json({ error: 'Employee not found' }, { status: 404 });
@@ -74,7 +74,7 @@ export async function DELETE(
       .where(and(eq(employees.id, id), eq(employees.companyId, user.companyId)))
       .returning({ id: employees.id });
 
-    const updated = Array.isArray(result) ? result[0] : result.rows?.[0];
+    const updated = Array.isArray(result) ? result[0] : (result as any).rows?.[0];
 
     if (!updated) {
       return NextResponse.json({ error: 'Employee not found' }, { status: 404 });

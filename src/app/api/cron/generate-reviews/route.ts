@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         status: 'open',
       }).returning();
 
-      const period = Array.isArray(periodResult) ? periodResult[0] : periodResult.rows?.[0];
+      const period = Array.isArray(periodResult) ? periodResult[0] : (periodResult as any).rows?.[0];
 
       const activeEmployees = await db
         .select()
@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
             supervisorRatingStatus: 'not_started',
           }).returning();
 
-          const review = Array.isArray(reviewResult) ? reviewResult[0] : reviewResult.rows?.[0];
+          const review = Array.isArray(reviewResult) ? reviewResult[0] : (reviewResult as any).rows?.[0];
 
           await db.insert(notifications).values({
             companyId: company.id,
