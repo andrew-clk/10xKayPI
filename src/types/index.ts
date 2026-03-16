@@ -1,7 +1,7 @@
 export type SubscriptionTier = 'free' | 'starter' | 'professional' | 'enterprise';
 export type SubscriptionStatus = 'trial' | 'active' | 'cancelled' | 'expired';
 export type EmployeeStatus = 'active' | 'inactive' | 'terminated';
-export type EmployeeRole = 'super_admin' | 'manager' | 'employee';
+export type EmployeeRole = 'super_admin' | 'manager' | 'leader' | 'employee';
 export type KpiAngle = 'commitment' | 'contribution' | 'character' | 'competency';
 export type ReviewStatus = 'not_started' | 'in_progress' | 'submitted';
 export type PeriodStatus = 'open' | 'closed' | 'archived';

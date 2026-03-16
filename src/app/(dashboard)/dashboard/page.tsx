@@ -11,16 +11,39 @@ export default async function DashboardPage() {
   const user = await requireAuth();
   const { companyId } = user;
 
-  if (user.role === 'super_admin' || user.role === 'manager') {
-    // Fetch team stats
-    const [totalEmployeesRow] = await db
-      .select({ count: count() })
-      .from(employees)
-      .where(and(eq(employees.companyId, companyId), eq(employees.status, 'active')));
+  if (user.role === 'super_admin' || user.role === 'manager' || user.role === 'leader') {
+    // Fetch team stats based on role
+    let employeeCount = 0;
 
-    const whereReviews = user.role === 'super_admin'
-      ? eq(performanceReviews.companyId, companyId)
-      : eq(performanceReviews.supervisorId, user.id);
+    if (user.role === 'super_admin') {
+      // Super admin sees all active employees
+      const [totalEmployeesRow] = await db
+        .select({ count: count() })
+        .from(employees)
+        .where(and(eq(employees.companyId, companyId), eq(employees.status, 'active')));
+      employeeCount = totalEmployeesRow?.count ?? 0;
+    } else {
+      // Manager and Leader see only their subordinates
+      const subordinates = await db
+        .select({ id: employees.id })
+        .from(employees)
+        .where(and(
+          eq(employees.companyId, companyId),
+          eq(employees.supervisorId, user.id),
+          eq(employees.status, 'active')
+        ));
+      employeeCount = subordinates.length;
+    }
+
+    // Fetch reviews based on role
+    let whereReviews;
+    if (user.role === 'super_admin') {
+      // Super admin sees all reviews
+      whereReviews = eq(performanceReviews.companyId, companyId);
+    } else {
+      // Manager and Leader see only reviews they supervise
+      whereReviews = eq(performanceReviews.supervisorId, user.id);
+    }
 
     const allReviews = await db
       .select({
@@ -65,7 +88,7 @@ export default async function DashboardPage() {
     return (
       <AdminDashboard
         user={user}
-        totalEmployees={totalEmployeesRow?.count ?? 0}
+        totalEmployees={employeeCount}
         totalReviews={allReviews.length}
         completedReviews={completedReviews.length}
         averageScore={scoreCount > 0 ? Math.round((scoreSum / scoreCount) * 10) / 10 : 0}

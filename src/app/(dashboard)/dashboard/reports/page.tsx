@@ -7,7 +7,23 @@ import { ReportsView } from '@/components/reports/ReportsView';
 export const metadata = { title: 'Reports' };
 
 export default async function ReportsPage() {
-  const user = await requireRole(['super_admin', 'manager']);
+  const user = await requireRole(['super_admin', 'manager', 'leader']);
+
+  // Build where clause based on role
+  let whereClause;
+  if (user.role === 'super_admin') {
+    // Super admin sees all company reviews
+    whereClause = eq(performanceReviews.companyId, user.companyId);
+  } else if (user.role === 'manager') {
+    // Manager sees reviews they supervise
+    whereClause = and(
+      eq(performanceReviews.companyId, user.companyId),
+      eq(performanceReviews.supervisorId, user.id)
+    );
+  } else {
+    // Leader sees only reviews they supervise
+    whereClause = eq(performanceReviews.supervisorId, user.id);
+  }
 
   const reviews = await db
     .select({
@@ -29,7 +45,7 @@ export default async function ReportsPage() {
     .from(performanceReviews)
     .innerJoin(reviewPeriods, eq(performanceReviews.reviewPeriodId, reviewPeriods.id))
     .innerJoin(employees, eq(performanceReviews.employeeId, employees.id))
-    .where(eq(performanceReviews.companyId, user.companyId))
+    .where(whereClause)
     .orderBy(desc(reviewPeriods.year), desc(reviewPeriods.month));
 
   const allDepts = await db

@@ -1,4 +1,4 @@
-import { requireAuth } from '@/lib/auth';
+import { requireRole } from '@/lib/auth';
 import { db } from '@/db';
 import { kpiTemplates, kpiCriteria } from '@/db/schema';
 import { eq, inArray, asc } from 'drizzle-orm';
@@ -8,7 +8,8 @@ import type { KpiTemplate } from '@/types';
 export const metadata = { title: 'KPI Templates' };
 
 export default async function KpiTemplatesPage() {
-  const user = await requireAuth();
+  // Only super_admin and manager can access templates
+  const user = await requireRole(['super_admin', 'manager']);
 
   const templates = await db.select().from(kpiTemplates).where(eq(kpiTemplates.companyId, user.companyId));
 

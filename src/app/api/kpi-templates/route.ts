@@ -36,6 +36,11 @@ export async function GET() {
   try {
     const user = await requireAuth();
 
+    // Only super_admin and manager can view templates
+    if (user.role !== 'super_admin' && user.role !== 'manager') {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+    }
+
     const templates = await db
       .select()
       .from(kpiTemplates)
@@ -63,7 +68,9 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const user = await requireAuth();
-    if (user.role !== 'super_admin') {
+
+    // Only super_admin and manager can create templates
+    if (user.role !== 'super_admin' && user.role !== 'manager') {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
     }
 

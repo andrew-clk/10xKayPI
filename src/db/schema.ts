@@ -38,6 +38,7 @@ export const employeeStatusEnum = pgEnum('employee_status', [
 export const employeeRoleEnum = pgEnum('employee_role', [
   'super_admin',
   'manager',
+  'leader',
   'employee',
 ]);
 

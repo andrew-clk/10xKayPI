@@ -24,7 +24,7 @@ export default async function TeamReviewsPage() {
   const user = await requireAuth();
   if (user.role === 'employee') redirect('/dashboard/reviews');
 
-  // Admin sees all, manager sees their subordinates' reviews
+  // Super Admin sees all, Manager/Leader see their subordinates' reviews
   const whereClause = user.role === 'super_admin'
     ? eq(performanceReviews.companyId, user.companyId)
     : eq(performanceReviews.supervisorId, user.id);

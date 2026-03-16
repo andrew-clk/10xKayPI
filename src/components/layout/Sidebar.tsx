@@ -31,16 +31,16 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['super_admin', 'manager', 'employee'] },
-  { href: '/dashboard/reviews', label: 'My Reviews', icon: ClipboardList, roles: ['super_admin', 'manager', 'employee'] },
-  { href: '/dashboard/team-reviews', label: 'Team Reviews', icon: Users, roles: ['super_admin', 'manager'] },
-  { href: '/dashboard/employees', label: 'Employees', icon: UserCircle, roles: ['super_admin'] },
-  { href: '/dashboard/departments', label: 'Departments', icon: Building2, roles: ['super_admin'] },
-  { href: '/dashboard/kpi-templates', label: 'KPI Templates', icon: Target, roles: ['super_admin'] },
+  { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['super_admin', 'manager', 'leader', 'employee'] },
+  { href: '/dashboard/reviews', label: 'My Reviews', icon: ClipboardList, roles: ['super_admin', 'manager', 'leader', 'employee'] },
+  { href: '/dashboard/team-reviews', label: 'Team Reviews', icon: Users, roles: ['super_admin', 'manager', 'leader'] },
+  { href: '/dashboard/employees', label: 'Employees', icon: UserCircle, roles: ['super_admin', 'manager', 'leader'] },
+  { href: '/dashboard/departments', label: 'Departments', icon: Building2, roles: ['super_admin', 'manager'] },
+  { href: '/dashboard/kpi-templates', label: 'KPI Templates', icon: Target, roles: ['super_admin', 'manager'] },
   { href: '/dashboard/review-periods', label: 'Review Periods', icon: CalendarDays, roles: ['super_admin'] },
-  { href: '/dashboard/reports', label: 'Reports', icon: BarChart, roles: ['super_admin'] },
-  { href: '/dashboard/notifications', label: 'Notifications', icon: Bell, roles: ['super_admin', 'manager', 'employee'] },
-  { href: '/dashboard/settings', label: 'Settings', icon: Settings, roles: ['super_admin'] },
+  { href: '/dashboard/reports', label: 'Reports', icon: BarChart, roles: ['super_admin', 'manager', 'leader'] },
+  { href: '/dashboard/notifications', label: 'Notifications', icon: Bell, roles: ['super_admin', 'manager', 'leader', 'employee'] },
+  { href: '/dashboard/settings', label: 'Settings', icon: Settings, roles: ['super_admin', 'manager'] },
 ];
 
 interface SidebarProps {

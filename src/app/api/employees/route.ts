@@ -15,7 +15,7 @@ const createSchema = z.object({
   supervisorId: z.string().uuid().optional().nullable(),
   kpiTemplateId: z.string().uuid().optional().nullable(),
   joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  role: z.enum(['super_admin', 'manager', 'employee']).default('employee'),
+  role: z.enum(['super_admin', 'manager', 'leader', 'employee']).default('employee'),
   status: z.enum(['active', 'inactive', 'terminated']).default('active'),
   photoUrl: z.string().url().optional().nullable(),
 });

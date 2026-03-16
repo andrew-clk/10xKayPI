@@ -12,13 +12,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { EmployeeForm } from './EmployeeForm';
-import type { Employee, Department, KpiTemplate } from '@/types';
+import type { Employee, Department, KpiTemplate, EmployeeRole } from '@/types';
+import { canManageUser, hasPermission } from '@/lib/rbac';
 
 interface Props {
   employees: Employee[];
   departments: Department[];
   kpiTemplates: KpiTemplate[];
   currentUserId: string;
+  userRole: EmployeeRole;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -28,12 +30,13 @@ const STATUS_COLORS: Record<string, string> = {
 };
 
 const ROLE_LABELS: Record<string, string> = {
-  super_admin: 'Admin',
+  super_admin: 'Super Admin',
   manager: 'Manager',
+  leader: 'Team Leader',
   employee: 'Employee',
 };
 
-export function EmployeeList({ employees: initial, departments, kpiTemplates, currentUserId }: Props) {
+export function EmployeeList({ employees: initial, departments, kpiTemplates, currentUserId, userRole }: Props) {
   const router = useRouter();
   const [employees, setEmployees] = useState(initial);
   const [search, setSearch] = useState('');

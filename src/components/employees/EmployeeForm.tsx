@@ -22,7 +22,7 @@ const schema = z.object({
   supervisorId: z.string().uuid().optional().nullable(),
   kpiTemplateId: z.string().uuid().optional().nullable(),
   joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD format'),
-  role: z.enum(['super_admin', 'manager', 'employee']),
+  role: z.enum(['super_admin', 'manager', 'leader', 'employee']),
   status: z.enum(['active', 'inactive', 'terminated']),
 });
 
@@ -197,6 +197,7 @@ export function EmployeeForm({ open, onOpenChange, employee, employees, departme
                     <FormControl><SelectTrigger><SelectValue /></SelectTrigger></FormControl>
                     <SelectContent>
                       <SelectItem value="employee">Employee</SelectItem>
+                      <SelectItem value="leader">Team Leader</SelectItem>
                       <SelectItem value="manager">Manager</SelectItem>
                       <SelectItem value="super_admin">Super Admin</SelectItem>
                     </SelectContent>

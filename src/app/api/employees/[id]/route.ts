@@ -16,7 +16,7 @@ const updateSchema = z.object({
   kpiTemplateId: z.string().uuid().nullable().optional(),
   joinDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
   terminationDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(),
-  role: z.enum(['super_admin', 'manager', 'employee']).optional(),
+  role: z.enum(['super_admin', 'manager', 'leader', 'employee']).optional(),
   status: z.enum(['active', 'inactive', 'terminated']).optional(),
   photoUrl: z.string().url().nullable().optional(),
 });
