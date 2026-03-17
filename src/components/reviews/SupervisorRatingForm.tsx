@@ -50,16 +50,42 @@ export function SupervisorRatingForm({ review }: Props) {
   }, [criteria]);
 
   const liveScore = useMemo(() => {
-    let total = 0;
-    for (const c of criteria) {
-      const r = ratings[c.id];
-      if (r?.rating != null) {
-        const aw = getAngleWeight(template, c.angle);
-        total += calculateWeightedScore(r.rating, parseFloat(c.weight), aw);
+    let weightedSum = 0;
+    let totalWeight = 0;
+
+    // Group criteria by angle to calculate properly
+    const angles = ['commitment', 'contribution', 'character', 'competency'] as KpiAngle[];
+
+    for (const angle of angles) {
+      const angleCriteria = criteriaByAngle[angle];
+      const angleWeight = getAngleWeight(template, angle);
+
+      if (angleCriteria.length === 0) continue;
+
+      let angleSum = 0;
+      let angleCriteriaWeight = 0;
+
+      for (const c of angleCriteria) {
+        const r = ratings[c.id];
+        if (r?.rating != null) {
+          const criterionWeight = parseFloat(c.weight);
+          angleSum += r.rating * criterionWeight;
+          angleCriteriaWeight += criterionWeight;
+        }
+      }
+
+      // If we have ratings for this angle, calculate the weighted score
+      if (angleCriteriaWeight > 0) {
+        const angleScore = angleSum / angleCriteriaWeight; // Average score for this angle
+        weightedSum += angleScore * angleWeight;
+        totalWeight += angleWeight;
       }
     }
-    return Math.round(total * 100) / 100;
-  }, [ratings, criteria, template]);
+
+    // Calculate final score as weighted average
+    const finalScore = totalWeight > 0 ? (weightedSum / totalWeight) * 10 : 0;
+    return Math.round(finalScore * 10) / 10; // Round to 1 decimal
+  }, [ratings, criteria, template, criteriaByAngle]);
 
   const majorVariances = useMemo(() => {
     return criteria.filter(c => {

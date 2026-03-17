@@ -48,16 +48,40 @@ export function SelfRatingForm({ review }: Props) {
   }, [criteria]);
 
   const liveScore = useMemo(() => {
-    let total = 0;
-    for (const c of criteria) {
-      const r = ratings[c.id];
-      if (r?.rating != null) {
-        const angleWeight = getAngleWeight(template, c.angle);
-        total += calculateWeightedScore(r.rating, parseFloat(c.weight), angleWeight);
+    let weightedSum = 0;
+    let totalWeight = 0;
+
+    // Group criteria by angle to calculate properly
+    for (const angle of angles) {
+      const angleCriteria = criteriaByAngle[angle];
+      const angleWeight = getAngleWeight(template, angle);
+
+      if (angleCriteria.length === 0) continue;
+
+      let angleSum = 0;
+      let angleCriteriaWeight = 0;
+
+      for (const c of angleCriteria) {
+        const r = ratings[c.id];
+        if (r?.rating != null) {
+          const criterionWeight = parseFloat(c.weight);
+          angleSum += r.rating * criterionWeight;
+          angleCriteriaWeight += criterionWeight;
+        }
+      }
+
+      // If we have ratings for this angle, calculate the weighted score
+      if (angleCriteriaWeight > 0) {
+        const angleScore = angleSum / angleCriteriaWeight; // Average score for this angle
+        weightedSum += angleScore * angleWeight;
+        totalWeight += angleWeight;
       }
     }
-    return Math.round(total * 100) / 100;
-  }, [ratings, criteria, template]);
+
+    // Calculate final score as weighted average
+    const finalScore = totalWeight > 0 ? (weightedSum / totalWeight) * 10 : 0;
+    return Math.round(finalScore * 10) / 10; // Round to 1 decimal
+  }, [ratings, criteria, template, angles, criteriaByAngle]);
 
   const ratedCount = Object.values(ratings).filter(r => r.rating != null).length;
   const requiredCount = criteria.filter(c => c.isRequired).length;
@@ -146,11 +170,19 @@ export function SelfRatingForm({ review }: Props) {
           const angleCriteria = criteriaByAngle[angle];
           if (angleCriteria.length === 0) return null;
           const angleWeight = getAngleWeight(template, angle);
-          const angleScore = angleCriteria.reduce((sum, c) => {
+
+          // Calculate average score for this angle
+          let angleSum = 0;
+          let angleWeightSum = 0;
+          for (const c of angleCriteria) {
             const r = ratings[c.id];
-            if (r?.rating == null) return sum;
-            return sum + calculateWeightedScore(r.rating, parseFloat(c.weight), angleWeight);
-          }, 0);
+            if (r?.rating != null) {
+              const criterionWeight = parseFloat(c.weight);
+              angleSum += r.rating * criterionWeight;
+              angleWeightSum += criterionWeight;
+            }
+          }
+          const angleScore = angleWeightSum > 0 ? angleSum / angleWeightSum : 0;
 
           const angleRatedCount = angleCriteria.filter(c => ratings[c.id]?.rating != null).length;
           const angleProgress = angleCriteria.length > 0 ? (angleRatedCount / angleCriteria.length) * 100 : 0;
@@ -166,7 +198,7 @@ export function SelfRatingForm({ review }: Props) {
                   <div className="flex items-center gap-3 shrink-0">
                     <span className="text-sm text-slate-500">{angleRatedCount}/{angleCriteria.length}</span>
                     <div className="text-base md:text-lg font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                      {angleScore.toFixed(1)} pts
+                      {angleScore.toFixed(1)}/10
                     </div>
                   </div>
                 </div>

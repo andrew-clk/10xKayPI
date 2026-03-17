@@ -17,6 +17,7 @@ import {
   ChevronRight,
   LogOut,
   CalendarDays,
+  UsersRound,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { signOut } from 'next-auth/react';
@@ -33,6 +34,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, roles: ['super_admin', 'manager', 'leader', 'employee'] },
   { href: '/dashboard/reviews', label: 'My Reviews', icon: ClipboardList, roles: ['super_admin', 'manager', 'leader', 'employee'] },
+  { href: '/dashboard/my-team', label: 'My Team', icon: UsersRound, roles: ['super_admin', 'manager', 'leader'] },
   { href: '/dashboard/team-reviews', label: 'Team Reviews', icon: Users, roles: ['super_admin', 'manager', 'leader'] },
   { href: '/dashboard/employees', label: 'Employees', icon: UserCircle, roles: ['super_admin', 'manager', 'leader'] },
   { href: '/dashboard/departments', label: 'Departments', icon: Building2, roles: ['super_admin', 'manager'] },
