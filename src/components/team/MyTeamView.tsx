@@ -27,7 +27,7 @@ import {
   TrendingUp,
   Award
 } from 'lucide-react';
-import type { Employee, KpiTemplate, Department } from '@/types';
+import type { Employee, KpiTemplate, Department, PerformanceGrade } from '@/types';
 import { GRADE_COLORS } from '@/utils/score';
 import { getRoleDisplayName, getRoleBadgeColor } from '@/lib/rbac';
 
@@ -351,7 +351,7 @@ export function MyTeamView({
                               </Badge>
 
                               {review?.performanceGrade && (
-                                <Badge className={`${GRADE_COLORS[review.performanceGrade as any]} text-xs font-bold`}>
+                                <Badge className={`${GRADE_COLORS[review.performanceGrade as PerformanceGrade]} text-xs font-bold`}>
                                   Grade {review.performanceGrade}
                                 </Badge>
                               )}
