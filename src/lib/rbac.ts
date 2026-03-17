@@ -72,7 +72,7 @@ export function hasPermission(
   permission: Permission
 ): boolean {
   const allowedRoles = PERMISSIONS[permission];
-  return allowedRoles.includes(userRole);
+  return allowedRoles.includes(userRole as any);
 }
 
 /**
